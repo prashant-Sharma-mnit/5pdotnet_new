@@ -992,7 +992,6 @@ namespace _5PaisaLibrary
         #endregion
 
 
-
         #region TaxReport
 
         public OutputBaseClass GetTaxReport(OrderInfo order)
@@ -1122,7 +1121,6 @@ namespace _5PaisaLibrary
 
 
         #endregion
-
 
 
         #region ValidateToken
