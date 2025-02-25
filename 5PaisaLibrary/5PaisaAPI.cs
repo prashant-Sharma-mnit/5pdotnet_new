@@ -30,7 +30,7 @@ namespace _5PaisaLibrary
             _apiKey = apiKey;
             EncryptionKey = encryptionKey;
             this.encryptUserId = encryptUserId;
-           
+
         }
         /* Makes a POST request */
         private string POSTWebRequest(Token agr, string URL, string Data)
@@ -207,7 +207,7 @@ namespace _5PaisaLibrary
         public OutputBaseClass placeOrder(OrderInfo order)
         {
             OutputBaseClass res = new OutputBaseClass();
-            
+
             try
             {
                 Token Token = this.Token;
@@ -243,11 +243,11 @@ namespace _5PaisaLibrary
                         OrderResponse pres = JsonConvert.DeserializeObject<OrderResponse>(Json);
                         if (pres.body.Status=="0")
                         {
-                           // OrderResponse pres = JsonConvert.DeserializeObject<OrderResponse>(Json);
+                            // OrderResponse pres = JsonConvert.DeserializeObject<OrderResponse>(Json);
                             res.PlaceOrderResponse = pres;
                             res.status = pres.body.Status;
                             res.http_error = pres.body.Message;
-                           
+
                         }
                         else
                         {
@@ -282,7 +282,7 @@ namespace _5PaisaLibrary
         {
             OutputBaseClass res = new OutputBaseClass();
 
-            
+
             try
             {
                 Token Token = this.Token;
@@ -296,7 +296,7 @@ namespace _5PaisaLibrary
                             head = new { key = _apiKey },
                             body = new
                             {
-                                
+
                                 Price = order.Price==null?0: order.Price,
                                 Qty = order.Qty==null?0:order.Qty,
                                 StopLossPrice = order.StopLossPrice==null?0:order.StopLossPrice,
@@ -592,7 +592,7 @@ namespace _5PaisaLibrary
             catch (Exception ex)
             {
                 //res.status = false;
-               // res.http_code = "404";
+                // res.http_code = "404";
                 res.http_error = ex.Message;
             }
             return res;
@@ -620,8 +620,8 @@ namespace _5PaisaLibrary
                       string URL = "https://openapi.5paisa.com/" + "V2/historical"+"/"+ Exch+"/"+"/"+ ExchType +"/"+ scripcode + "/" + Day+"?"+"from"+"="+fromDate+"&"+ "end"+"="+ ToDate;
 
                        string Result = GETWebRequest(Token,URL);
-                       var obj1 = JsonConvert.DeserializeObject<dynamic>(Result);
-                      // obj = obj1.data.candles;
+                        var obj1 = JsonConvert.DeserializeObject<dynamic>(Result);
+                        // obj = obj1.data.candles;
                         res.HistoricalData= obj1.data.candles;
                     }
                     else
@@ -656,14 +656,14 @@ namespace _5PaisaLibrary
 
                 string URL = _root + "ScripMaster/segment/" + Segment;
                 ScripOut = GETWebRequest(Token, URL);
-             
+
             }
             catch (Exception ex)
             {
                 ScripOut = ex.Message;
             }
             return ScripOut;
-          
+
         }
 
         #endregion
@@ -694,7 +694,7 @@ namespace _5PaisaLibrary
                             }
 
                         }); ;
-                    
+
                         string Json = POSTWebRequest(Token, URL, dataStringSession);
                         MarketFeedResponse pres = JsonConvert.DeserializeObject<MarketFeedResponse>(Json);
                         if (pres.body.Status == 0)
@@ -755,9 +755,9 @@ namespace _5PaisaLibrary
                             body = new
                             {
                                 ClientCode = order.ClientCode
-                    }
+                            }
 
-                        }); 
+                        });
 
                         string Json = POSTWebRequest(Token, URL, dataStringSession);
                         NetPositionNetWiseRes pres = JsonConvert.DeserializeObject<NetPositionNetWiseRes>(Json);
@@ -991,6 +991,135 @@ namespace _5PaisaLibrary
         }
         #endregion
 
+        #region TaxReport
+
+        public OutputBaseClass GetTaxReport(OrderInfo order)
+        {
+            OutputBaseClass res = new OutputBaseClass();
+            res.http_code = "200";
+            try
+            {
+                Token Token = this.Token;
+                if (Token != null)
+                {
+                    if (ValidateToken(Token))
+                    {
+                        string URL = _root + "taxreport";
+                        var dataStringSession = JsonConvert.SerializeObject(new 
+                        {
+                            head = new { key = _apiKey },
+                            body = new
+                            {
+                                clientCode = order.ClientCode,
+                                FromDate = order.FromDate,
+                                ToDate = order.ToDate
+                            }
+                        });
+
+                        string Json = POSTWebRequest(Token, URL, dataStringSession);
+                        TaxReportResponse pres = JsonConvert.DeserializeObject<TaxReportResponse>(Json);
+
+
+
+
+                        if (pres.StatusCode == 200)
+                        {
+
+                            res.TaxReportResponse = pres;
+                            res.status = Convert.ToString(pres.StatusCode);
+                            res.http_error = pres.StatusMessage;
+
+                        }
+                        else
+                        {
+                            res.status = Convert.ToString(pres.StatusCode);
+                            res.http_error = pres.StatusMessage;
+                            //res.http_error = Json.Replace("PostError:", "");
+                        }
+
+                    }
+                    else
+                    {
+                        res.status = "-1";
+                        res.http_error = "Token not exist";
+                    }
+                }
+                else
+                {
+                    res.status = "-1";
+                    res.http_error = "Token not exist";
+                }
+            }
+            catch (Exception ex)
+            {
+                res.http_error = ex.Message;
+            }
+            return res;
+        }
+
+        #endregion
+
+        #region GetLedger
+        public OutputBaseClass GetLedger(OrderInfo order)
+        {
+            OutputBaseClass res = new OutputBaseClass();
+            res.http_code = "200";
+            try
+            {
+                Token Token = this.Token;
+                if (Token != null)
+                {
+                    if (ValidateToken(Token))
+                    {
+                        string URL = _root + "Ledger";
+                        var dataStringSession = JsonConvert.SerializeObject(new
+                        {
+                            head = new { key = _apiKey },
+                            body = new
+                            {
+                                clientcode = order.ClientCode,
+                                FromDate = order.FromDate,
+                                ToDate = order.ToDate
+                            }
+                        });
+
+                        string Json = POSTWebRequest(Token, URL, dataStringSession);
+                        LedgerResponse pres = JsonConvert.DeserializeObject<LedgerResponse>(Json);
+
+                        if ((pres.body.Message).ToUpper() == "SUCCESS")
+                        {
+                            res.LedgerResponse = pres;
+                            res.status = "0";
+                            res.http_error = pres.body.Message;
+                        }
+                        else
+                        {
+                            res.status = "-1";
+                            res.http_error = pres.body.Message;
+                        }
+                    }
+                    else
+                    {
+                        res.status = "-1";
+                        res.http_error = "Token not exist";
+                    }
+                }
+                else
+                {
+                    res.status = "-1";
+                    res.http_error = "Token not exist";
+                }
+            }
+            catch (Exception ex)
+            {
+                res.http_error = ex.Message;
+            }
+            return res;
+        }
+
+
+        #endregion
+
 
         #region ValidateToken
         private bool ValidateToken(Token token)
@@ -1009,6 +1138,10 @@ namespace _5PaisaLibrary
             return result;
         }
         #endregion
+
+
+
+
     }
 }
 

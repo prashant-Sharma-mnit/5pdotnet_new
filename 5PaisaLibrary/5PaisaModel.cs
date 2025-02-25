@@ -57,6 +57,10 @@ namespace _5PaisaLibrary
         public MarketSnapshotV1Res MarketSnapshotV1 { get; set; }
         public NetPositionNetWiseV3Res NetPositionNetWiseV3 { get; set; }
 
+        public TaxReportResponse TaxReportResponse { get; set; }
+        public LedgerResponse LedgerResponse { get; set; }
+        
+
     }
     public class HistoricalDataRes
     {
@@ -529,6 +533,9 @@ namespace _5PaisaLibrary
 
         public List<MarketSnapshotReqBody> Data { get; set; }
 
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
+
     }
     public class WebsocketConnect
     {
@@ -603,6 +610,70 @@ namespace _5PaisaLibrary
         public bool IsIntraday { get; set; }
     }
 
+
+    public class TaxReportResponse
+    {
+
+        public int StatusCode { get; set; }
+        public string StatusMessage { get; set; }
+        public TaxReportData data { get; set; }
+    }
+
+    public class TaxReportData
+    {
+        public string PanNo { get; set; }
+        public string ClientCode { get; set; }
+        public string EmailId { get; set; }
+        public string Equity { get; set; }
+        public string FNO { get; set; }
+        public string Currency { get; set; }
+        public string Commodity { get; set; }
+        public string MutualFund { get; set; }
+    }
+
+
+
+
+
+    public class LedgerResponse
+    {
+        public ResheadLedger head { get; set; }
+        public LedgerResponseBody body { get; set; }
+    }
+
+    public class ResheadLedger
+
+    {
+        public string Type { get; set; }
+        public string Status { get; set; }
+    }
+
+
+    public class LedgerResponseBody
+    {
+        public string Message { get; set; }
+        public int Count { get; set; }
+        public List<LedgerClientData> ClientData { get; set; }
+    }
+
+    public class LedgerClientData
+    {
+        public string PARTYCODE { get; set; }
+        public string ExSeg { get; set; }
+        public decimal OPEN_BAL { get; set; }
+        public DateTime TXNDATE { get; set; }
+        public string Particular { get; set; }
+        public string VOUCHERNO { get; set; }
+        public decimal DEBIT { get; set; }
+        public decimal CREDIT { get; set; }
+        public decimal BALANCE { get; set; }
+        public decimal TOTAL_DR { get; set; }
+        public decimal TOTAL_CR { get; set; }
+        public decimal NET_BALANCE { get; set; }
+        public string MAINCODE { get; set; }
+        public int SNO { get; set; }
+        public string Particular_Desc { get; set; }
+    }
 
 }
 
